@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function GameBoard() {
+export default function GameBoard({ currentPlayer, onHandleCurrentTurn }) {
   const initialGameBoard = [
     [null, null, null],
     [null, null, null],
@@ -14,9 +14,11 @@ export default function GameBoard() {
       const updatedGameBoard = [
         ...previousGameBoard.map((innerArray) => [...innerArray]),
       ];
-      updatedGameBoard[rowIndex][colIndex] = "X";
+      updatedGameBoard[rowIndex][colIndex] = currentPlayer;
       return updatedGameBoard;
     });
+
+    onHandleCurrentTurn();
   }
   return (
     <ol id="game-board">
