@@ -1,8 +1,15 @@
 import Player from "./components/Player";
 import GameBoard from "./components/GameBoard";
+import GameOver from "./components/GameOver";
 import Log from "./components/Log";
 import { useState } from "react";
 import { WINNING_COMBINATIONS } from "./winning-combinations";
+
+const initialGameBoard = [
+  [null, null, null],
+  [null, null, null],
+  [null, null, null],
+];
 
 function deriveActivePlayer(gameTurns) {
   let currentPlayer = "X";
@@ -19,13 +26,7 @@ function App() {
 
   const currentPlayer = deriveActivePlayer(gameTurns);
 
-  const initialGameBoard = [
-    [null, null, null],
-    [null, null, null],
-    [null, null, null],
-  ];
-
-  let gameBoard = initialGameBoard;
+  let gameBoard = [...initialGameBoard.map((array) => [...array])];
 
   for (const turn of gameTurns) {
     gameBoard[turn.square.row][turn.square.col] = turn.player;
@@ -61,6 +62,13 @@ function App() {
     });
   }
 
+  function resetGame() {
+    console.log("mata");
+    setGameTurns([]);
+  }
+
+  const hasDraw = gameTurns.length === 9 && !winner;
+
   return (
     <main>
       <div id="game-container">
@@ -76,7 +84,9 @@ function App() {
             isActive={currentPlayer === "O"}
           />
         </ol>
-        {winner && <p>You won, {winner}!</p>}
+        {(winner || hasDraw) && (
+          <GameOver winner={winner} onResetGame={resetGame} />
+        )}
         <GameBoard onSelectSquare={handlePlayerTurn} board={gameBoard} />
       </div>
       <Log turns={gameTurns} />
